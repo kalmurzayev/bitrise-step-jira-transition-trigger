@@ -13,13 +13,7 @@ import (
 	"net/http"
 	"strings"
 )
-
-// -----------------------
-// --- Models
-// -----------------------
-
-// ConfigsModel ...
-type ConfigsModel struct {
+type JiraRequestData struct {
 	JiraUsername     string
 	JiraPassword     string
 	JiraInstanceURL  string
@@ -41,8 +35,8 @@ func main() {
 	}
 }
 
-func buildConfigFromEnv() ConfigsModel {
-	configs := ConfigsModel{
+func buildConfigFromEnv() JiraRequestData {
+	configs := JiraRequestData{
 		JiraUsername:     os.Getenv("jira_username"),
 		JiraPassword:     os.Getenv("jira_password"),
 		JiraInstanceURL:  os.Getenv("jira_instance_url"),
@@ -55,7 +49,7 @@ func buildConfigFromEnv() ConfigsModel {
 	return configs
 }
 
-func (configs ConfigsModel) dump() {
+func (configs JiraRequestData) dump() {
 	fmt.Println()
 	log.Infof("Configs:")
 	log.Printf(" - JiraUsername: %s", configs.JiraUsername)
@@ -65,7 +59,7 @@ func (configs ConfigsModel) dump() {
 	log.Printf(" - TransitionId: %s", configs.TransitionId)
 }
 
-func (configs ConfigsModel) validate() error {
+func (configs JiraRequestData) validate() error {
 	if configs.JiraUsername == "" {
 		return errors.New("no Jira Username specified")
 	}
@@ -92,7 +86,7 @@ func (configs ConfigsModel) validate() error {
 
 // -------------- request related methods -----------------
 
-func buildRequestBody(configs ConfigsModel) ([]byte, error) {
+func buildRequestBody(configs JiraRequestData) ([]byte, error) {
 	payload := map[string]interface{}{
 		"transition": map[string]interface{}{
 			"id": configs.TransitionId,
@@ -101,7 +95,7 @@ func buildRequestBody(configs ConfigsModel) ([]byte, error) {
 	return json.Marshal(payload)
 }
 
-func buildRequest(configs ConfigsModel, issueIDOrKey string, body []byte) (*http.Request, error) {
+func buildRequest(configs JiraRequestData, issueIDOrKey string, body []byte) (*http.Request, error) {
 	requestURL := fmt.Sprintf("%s/rest/api/2/issue/%s/transitions", configs.JiraInstanceURL, issueIDOrKey)
 	request, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(body))
 	if err != nil {
@@ -114,7 +108,7 @@ func buildRequest(configs ConfigsModel, issueIDOrKey string, body []byte) (*http
 	return request, nil
 }
 
-func triggerIssueTransition(configs ConfigsModel, issueIDOrKey string, body []byte) error {
+func triggerIssueTransition(configs JiraRequestData, issueIDOrKey string, body []byte) error {
 	log.Infof("Triggering for issue %s", issueIDOrKey)
 
 	request, err := buildRequest(configs, issueIDOrKey, body)
@@ -155,7 +149,7 @@ func triggerIssueTransition(configs ConfigsModel, issueIDOrKey string, body []by
 }
 
 // Perform a series of requests with pre-validated configs
-func performRequests(configs ConfigsModel) error {
+func performRequests(configs JiraRequestData) error {
 	body, err := buildRequestBody(configs)
 	if err != nil {
 		return err
