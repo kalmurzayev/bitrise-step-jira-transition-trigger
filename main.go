@@ -52,7 +52,7 @@ func main() {
 
 	if err := performRequests(configs); err != nil {
 		//log.Errorf("Could not update issue, error: %s", err)
-		os.Exit(2)
+		os.Exit(6)
 	}
 }
 

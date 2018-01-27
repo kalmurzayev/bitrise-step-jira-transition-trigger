@@ -64,24 +64,43 @@ toolkit:
 
 
 inputs:
-  - example_step_input: Default Value - you can leave this empty if you want to
+  - jira_username:
     opts:
-      title: "Example Step Input"
-      summary: Summary. No more than 2-3 sentences.
-      description: |
-        Description of this input.
-
-        Can be Markdown formatted text.
+      title: "JIRA username"
+      summary: JIRA user (or bot) login.
       is_expand: true
       is_required: true
-      value_options: []
 
-outputs:
-  - EXAMPLE_STEP_OUTPUT:
+  - jira_password:
     opts:
-      title: "Example Step Output"
-      summary: Summary. No more than 2-3 sentences.
+      title: "JIRA user password"
+      summary: JIRA user (or bot) password or token.
       description: |
-        Description of this output.
+        See [API tokens documentation](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
+        for more information about API tokens.
+      is_expand: true
+      is_required: true
 
-        Can be Markdown formatted text.
+  - jira_instance_url:
+    opts:
+      title: "JIRA instance URL"
+      summary: JIRA instance URL e.g. `https://example.atlassian.net`.
+      is_expand: true
+      is_required: true
+
+  - issue_id_or_key_list:
+    opts:
+      title: "List of issue ids or keys"
+      summary: Issues numeric ids e.g. `100000` or keys e.g. `FOO-123`, separated by `|`. At least one element has to be specified. White spaces are trimmed.
+      is_expand: true
+      is_required: true
+
+  - transition_id:
+    opts:
+      title: "Issue transition ID"
+      summary: Issue A-->B state transition ID, usually a number
+      description: |
+        Your JIRA workspace should have a number of default and custom issue transitions, each having ID. Use [NodeJS API client](https://www.npmjs.com/package/jira-client)
+        to find out transition IDs.
+      is_expand: true
+      is_required: true
