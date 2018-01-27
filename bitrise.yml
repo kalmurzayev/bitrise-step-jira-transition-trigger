@@ -55,7 +55,7 @@ workflows:
         - jira_password: ${JIRA_PASSWORD}
         - jira_instance_url: ${JIRA_INSTANCE_URL}
         - issue_id_or_key_list: ${ISSUE_KEY_LIST}
-        - field_key: ${TRANSITION_ID}
+        - transition_id: ${TRANSITION_ID}
     - script:
         inputs:
         - content: |
