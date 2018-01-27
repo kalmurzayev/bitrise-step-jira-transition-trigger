@@ -47,7 +47,7 @@ func buildConfigFromEnv() ConfigsModel {
 		JiraPassword:     os.Getenv("jira_password"),
 		JiraInstanceURL:  os.Getenv("jira_instance_url"),
 		IssueIDOrKeyList: strings.Split(os.Getenv("issue_id_or_key_list"), "|"),
-		FieldKey:         os.Getenv("transition_id"),
+		TransitionId:         os.Getenv("transition_id"),
 	}
 	for i, idOrKey := range configs.IssueIDOrKeyList {
 		configs.IssueIDOrKeyList[i] = strings.TrimSpace(idOrKey)
@@ -62,8 +62,7 @@ func (configs ConfigsModel) dump() {
 	log.Printf(" - JiraPassword (hidden): %s", strings.Repeat("*", 5))
 	log.Printf(" - JiraInstanceURL: %s", configs.JiraInstanceURL)
 	log.Printf(" - IssueIdOrKeyList: %v", configs.IssueIDOrKeyList)
-	log.Printf(" - FieldKey: %s", configs.FieldKey)
-	log.Printf(" - FieldValue: %s", configs.FieldValue)
+	log.Printf(" - TransitionId: %s", configs.TransitionId)
 }
 
 func (configs ConfigsModel) validate() error {
