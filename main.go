@@ -86,7 +86,6 @@ func main() {
 			_, readErr := ioutil.ReadAll(response.Body)
 			if readErr != nil {
 				os.Exit(14)
-				return errors.New("could not read JIRA API response")
 			}
 			if response.Header.Get("X-Seraph-LoginReason") == "AUTHENTICATION_DENIED" {
 				//log.Warnf("CAPTCHA triggered")
