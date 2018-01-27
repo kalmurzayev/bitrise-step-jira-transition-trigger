@@ -8,7 +8,7 @@ import (
 
 	"bytes"
 	"encoding/json"
-	// "github.com/bitrise-io/go-utils/log"
+	"github.com/bitrise-io/go-utils/log"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -25,12 +25,12 @@ func main() {
 	configs := buildConfigFromEnv()
 	configs.dump()
 	if err := configs.validate(); err != nil {
-		log.Errorf("Issue with input: %s", err)
+		//log.Errorf("Issue with input: %s", err)
 		os.Exit(1)
 	}
 
 	if err := performRequests(configs); err != nil {
-		log.Errorf("Could not update issue, error: %s", err)
+		//log.Errorf("Could not update issue, error: %s", err)
 		os.Exit(2)
 	}
 }
@@ -51,12 +51,12 @@ func buildConfigFromEnv() JiraRequestData {
 
 func (configs JiraRequestData) dump() {
 	fmt.Println()
-	log.Infof("Configs:")
-	log.Printf(" - JiraUsername: %s", configs.JiraUsername)
-	log.Printf(" - JiraPassword (hidden): %s", strings.Repeat("*", 5))
-	log.Printf(" - JiraInstanceURL: %s", configs.JiraInstanceURL)
-	log.Printf(" - IssueIdOrKeyList: %v", configs.IssueIDOrKeyList)
-	log.Printf(" - TransitionId: %s", configs.TransitionId)
+	//log.Infof("Configs:")
+	//log.Printf(" - JiraUsername: %s", configs.JiraUsername)
+	//log.Printf(" - JiraPassword (hidden): %s", strings.Repeat("*", 5))
+	//log.Printf(" - JiraInstanceURL: %s", configs.JiraInstanceURL)
+	//log.Printf(" - IssueIdOrKeyList: %v", configs.IssueIDOrKeyList)
+	//log.Printf(" - TransitionId: %s", configs.TransitionId)
 }
 
 func (configs JiraRequestData) validate() error {
@@ -109,7 +109,7 @@ func buildRequest(configs JiraRequestData, issueIDOrKey string, body []byte) (*h
 }
 
 func triggerIssueTransition(configs JiraRequestData, issueIDOrKey string, body []byte) error {
-	log.Infof("Triggering for issue %s", issueIDOrKey)
+	//log.Infof("Triggering for issue %s", issueIDOrKey)
 
 	request, err := buildRequest(configs, issueIDOrKey, body)
 	if err != nil {
@@ -126,25 +126,25 @@ func triggerIssueTransition(configs JiraRequestData, issueIDOrKey string, body [
 	defer func() {
 		err := response.Body.Close()
 		if err != nil {
-			log.Warnf("Failed to close response body, error: %s", err)
+			//log.Warnf("Failed to close response body, error: %s", err)
 		}
 	}()
 
 	if response.StatusCode != http.StatusNoContent {
-		log.Warnf("JIRA API response status: %s", response.Status)
+		//log.Warnf("JIRA API response status: %s", response.Status)
 		contents, readErr := ioutil.ReadAll(response.Body)
 		if readErr != nil {
 			return errors.New("could not read JIRA API response")
 		}
 		if response.Header.Get("X-Seraph-LoginReason") == "AUTHENTICATION_DENIED" {
-			log.Warnf("CAPTCHA triggered")
+			//log.Warnf("CAPTCHA triggered")
 		} else {
-			log.Warnf("JIRA API response: %s", contents)
+			//log.Warnf("JIRA API response: %s", contents)
 		}
 		return errors.New("JIRA API request failed")
 	}
 
-	log.Infof("Issue %s updated successfully", issueIDOrKey)
+	//log.Infof("Issue %s updated successfully", issueIDOrKey)
 	return nil
 }
 

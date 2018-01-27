@@ -28,25 +28,6 @@ workflows:
             # Go lint
             go get -u -v github.com/golang/lint/golint
     - script:
-        title: Err check
-        inputs:
-        - content: errcheck -asserts=true -blank=true $GOLIST_WITHOUT_VENDOR
-    - script:
-        title: Go lint
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -e
-            while read -r line; do
-              echo "-> Linting: $line"
-              golint_out="$(golint $line)"
-              if [[ "${golint_out}" != "" ]] ; then
-                echo "=> Golint issues found:"
-                echo "${golint_out}"
-                exit 1
-              fi
-            done <<< "$GOLIST_WITHOUT_VENDOR"
-    - script:
         title: Go test
         inputs:
         - content: go test
