@@ -8,7 +8,7 @@ import (
 
 	"bytes"
 	"encoding/json"
-	// "github.com/bitrise-io/go-utils/log"
+	"github.com/bitrise-io/go-utils/log"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -23,11 +23,32 @@ type JiraRequestData struct {
 
 func main() {
 	configs := buildConfigFromEnv()
-	configs.dump()
-	if err := configs.validate(); err != nil {
+	if err := configs.validateJiraUsername(); err != nil {
 		//log.Errorf("Issue with input: %s", err)
 		os.Exit(1)
 	}
+
+	if err := configs.validateJiraPassword(); err != nil {
+		//log.Errorf("Issue with input: %s", err)
+		os.Exit(2)
+	}
+
+	if err := configs.validateJiraInstanceURL(); err != nil {
+		//log.Errorf("Issue with input: %s", err)
+		os.Exit(3)
+	}
+
+	if err := configs.validateIssueIDOrKeyList(); err != nil {
+		//log.Errorf("Issue with input: %s", err)
+		os.Exit(4)
+	}
+
+	if err := configs.validateTransitionId(); err != nil {
+		//log.Errorf("Issue with input: %s", err)
+		os.Exit(5)
+	}
+
+
 
 	if err := performRequests(configs); err != nil {
 		//log.Errorf("Could not update issue, error: %s", err)
@@ -49,35 +70,36 @@ func buildConfigFromEnv() JiraRequestData {
 	return configs
 }
 
-func (configs JiraRequestData) dump() {
-	fmt.Println()
-	//log.Infof("Configs:")
-	//log.Printf(" - JiraUsername: %s", configs.JiraUsername)
-	//log.Printf(" - JiraPassword (hidden): %s", strings.Repeat("*", 5))
-	//log.Printf(" - JiraInstanceURL: %s", configs.JiraInstanceURL)
-	//log.Printf(" - IssueIdOrKeyList: %v", configs.IssueIDOrKeyList)
-	//log.Printf(" - TransitionId: %s", configs.TransitionId)
-}
-
-func (configs JiraRequestData) validate() error {
+func (configs JiraRequestData) validateJiraUsername() error {
 	if configs.JiraUsername == "" {
 		return errors.New("no Jira Username specified")
 	}
+	return nil
+}
+
+func (configs JiraRequestData) validateJiraPassword() error {
 	if configs.JiraPassword == "" {
 		return errors.New("no Jira Password specified")
 	}
+	return nil
+}
+
+func (configs JiraRequestData) validateJiraInstanceURL() error {
 	_, err := url.ParseRequestURI(configs.JiraInstanceURL)
 	if err != nil {
-		return fmt.Errorf("invalid Jira instance URL, error %s", err)
+		return fmt.Errorf("invalid JiraInstanceURL, error %s", err)
 	}
+	return nil
+}
+
+func (configs JiraRequestData) validateIssueIDOrKeyList() error {
 	if len(configs.IssueIDOrKeyList) == 0 {
-		return errors.New("no Jira issue IDs nor keys specified")
+		return errors.New("no issues specified")
 	}
-	for i, idOrKey := range configs.IssueIDOrKeyList {
-		if idOrKey == "" {
-			return fmt.Errorf("empty Jira issue ID nor key specified at index %d", i)
-		}
-	}
+	return nil
+}
+
+func (configs JiraRequestData) validateTransitionId() error {
 	if configs.TransitionId == "" {
 		return errors.New("No transition ID")
 	}
