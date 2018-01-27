@@ -7,7 +7,7 @@ app:
   - JIRA_PASSWORD: ${JIRA_PASSWORD}
   - JIRA_INSTANCE_URL: ${JIRA_INSTANCE_URL}
   - ISSUE_KEY_LIST: ${ISSUE_KEY_LIST}
-  - FIELD_KEY: ${TRANSITION_ID}
+  - TRANSITION_ID: ${TRANSITION_ID}
   # If you want to share this step into a StepLib
   - BITRISE_STEP_ID: trigger-jira-issue-transition
   - BITRISE_STEP_VERSION: "0.0.1"
