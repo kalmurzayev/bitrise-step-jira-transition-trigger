@@ -132,7 +132,7 @@ func triggerIssueTransition(configs JiraRequestData, issueIDOrKey string, body [
 
 	if response.StatusCode != http.StatusNoContent {
 		//log.Warnf("JIRA API response status: %s", response.Status)
-		contents, readErr := ioutil.ReadAll(response.Body)
+		_, readErr := ioutil.ReadAll(response.Body)
 		if readErr != nil {
 			return errors.New("could not read JIRA API response")
 		}
