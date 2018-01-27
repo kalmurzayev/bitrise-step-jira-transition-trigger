@@ -48,12 +48,22 @@ func main() {
 		os.Exit(5)
 	}
 
-
-
-	if err := performRequests(configs); err != nil {
-		//log.Errorf("Could not update issue, error: %s", err)
-		os.Exit(6)
+	body, err := buildRequestBody(configs)
+	if err != nil {
+		os.Exit(6);
 	}
+
+	for ind, idOrKey := range configs.IssueIDOrKeyList {
+		if err := triggerIssueTransition(configs, idOrKey, body); err != nil {
+			errNumber := 20 + ind
+			os.Exit(errNumber)
+		}
+	}
+
+	// if err := performRequests(configs); err != nil {
+	// 	//log.Errorf("Could not update issue, error: %s", err)
+	// 	os.Exit(50)
+	// }
 }
 
 func buildConfigFromEnv() JiraRequestData {
