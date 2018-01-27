@@ -53,7 +53,7 @@ func main() {
 		os.Exit(6);
 	}
 
-	for ind, issueIDOrKey := range configs.IssueIDOrKeyList {
+	for _, issueIDOrKey := range configs.IssueIDOrKeyList {
 		// if err := triggerIssueTransition(configs, idOrKey, body); err != nil {
 		// 	errNumber := 20
 		// 	os.Exit(errNumber)
