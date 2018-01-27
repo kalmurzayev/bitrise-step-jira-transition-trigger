@@ -53,17 +53,48 @@ func main() {
 		os.Exit(6);
 	}
 
-	for ind, idOrKey := range configs.IssueIDOrKeyList {
-		if err := triggerIssueTransition(configs, idOrKey, body); err != nil {
-			errNumber := 20 + ind
-			os.Exit(errNumber)
+	for ind, issueIDOrKey := range configs.IssueIDOrKeyList {
+		// if err := triggerIssueTransition(configs, idOrKey, body); err != nil {
+		// 	errNumber := 20
+		// 	os.Exit(errNumber)
+		// }
+
+		request, err := buildRequest(configs, issueIDOrKey, body)
+		if err != nil {
+			os.Exit(11)
+			return
+		}
+
+		client := http.Client{}
+		response, err := client.Do(request)
+
+		if err != nil {
+			os.Exit(12)
+			return
+		}
+
+		defer func() {
+			err := response.Body.Close()
+			if err != nil {
+				//log.Warnf("Failed to close response body, error: %s", err)
+				os.Exit(13)
+			}
+		}()
+
+		if response.StatusCode != http.StatusNoContent {
+			//log.Warnf("JIRA API response status: %s", response.Status)
+			_, readErr := ioutil.ReadAll(response.Body)
+			if readErr != nil {
+				os.Exit(14)
+				return errors.New("could not read JIRA API response")
+			}
+			if response.Header.Get("X-Seraph-LoginReason") == "AUTHENTICATION_DENIED" {
+				//log.Warnf("CAPTCHA triggered")
+			} else {
+				//log.Warnf("JIRA API response: %s", contents)
+			}
 		}
 	}
-
-	// if err := performRequests(configs); err != nil {
-	// 	//log.Errorf("Could not update issue, error: %s", err)
-	// 	os.Exit(50)
-	// }
 }
 
 func buildConfigFromEnv() JiraRequestData {
