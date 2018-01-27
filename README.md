@@ -1,6 +1,6 @@
 # Trigger JIRA issue transition
 
-desc
+description
 
 
 ## How to use this Step
