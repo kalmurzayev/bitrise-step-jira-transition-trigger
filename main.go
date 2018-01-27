@@ -91,6 +91,7 @@ func main() {
 				//log.Warnf("CAPTCHA triggered")
 			} else {
 				//log.Warnf("JIRA API response: %s", contents)
+				os.Exit(15)
 			}
 		}
 	}
