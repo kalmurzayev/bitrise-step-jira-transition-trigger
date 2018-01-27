@@ -8,7 +8,7 @@ import (
 
 	"bytes"
 	"encoding/json"
-	"github.com/bitrise-io/go-utils/log"
+	// "github.com/bitrise-io/go-utils/log"
 	"io/ioutil"
 	"net/http"
 	"strings"
